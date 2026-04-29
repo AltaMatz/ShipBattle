@@ -7,19 +7,22 @@ using namespace std;
 #define navi 6
 #define punti 21
 
+// ---------------------------------- ELENCO FUNZIONI ----------------------------------
 void menu(int &scelta);
 void matrix(int n[]);
 void posiziona (int n[], string p);
 void assegnazione(int n[], string coord);
 int turno (int v[], int n[], string p);
 void wait(int n);
+void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[]);
 int playagain(string p1, string p2, int won1, int won2);
 void clean();
+void showHistory();
 
+// ---------------------------------- MAIN ----------------------------------
 int main() {
     int scelta1=1;
     int victory1, victory2;
-    string player1, player2;
     do {
         menu(scelta1);
         switch (scelta1) {
@@ -36,7 +39,7 @@ int main() {
             cin >> p2;
 
             do {
-                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella], ris=0;
+                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella];
                 for (int i=0; i<maxTabella; i++) {
                     n1[i] = 0;
                     n2[i] = 0;
@@ -44,54 +47,24 @@ int main() {
                     v2[i] = 0;
                 }
 
-                //---------------- ASSEGNAZIONE POSIZIONE NAVI ----------------
+                //ASSEGNAZIONE POSIZIONE NAVI
                 posiziona(n1, p1);
                 posiziona(n2, p2);
-                //-------------------------------------------------------------
 
-                //-------------------------- PARTITA --------------------------
-                srand(time(NULL));
-                int n = rand()%2 + 1;
+                //INIZIO PARTITA
                 cout << "---------- SIMBOLI TABELLONE ----------" << endl; 
                 cout << "'X' ---> Nave colpita" << endl;
                 cout << "'O' ---> Nave mancata" << endl;
                 cout << "---------------------------------------" << endl << endl;
 
-                if (n==1) {  //gioca prima il giocatore 1
-                    while (ris!=1) {
-                        ris = turno(v1, n2, p1);
-                        if (ris==1) {
-                            cout << "\nL'ammiraglio " << p1 << " ha vinto!";
-                            won1++;
-                            scelta = playagain(p1,  p2, won1, won2);
-                            break;
-                        }
-                        ris = turno(v2, n1, p2);
-                        if (ris==1) {
-                            cout << "\nL'ammiraglio " << p2 << " ha vinto!";
-                            won2++;
-                            scelta = playagain(p1,  p2, won1, won2);
-                        }
-                    }
-                } else {    //gioca prima il giocatore 2
-                    while (ris!=1) {
-                        ris = turno(v2, n1, p2);
-                        if (ris==1) {
-                            cout << "\nL'ammiraglio " << p2 << " ha vinto!"<< endl << endl;
-                            won2++;
-                            scelta = playagain(p1,  p2, won1, won2);
-                            break;
-                        }
-                        ris = turno(v1, n2, p1);
-                        if (ris==1) {
-                            cout << "\nL'ammiraglio " << p1 << " ha vinto!"<< endl << endl;
-                            won1++;
-                            scelta = playagain(p1,  p2, won1, won2);
-                        }
-                    }
-                }
+                start(p1, p2, won1, won2, v1, v2, n1, n2);
+                scelta = playagain(p1,  p2, won1, won2);
                 clean();
+                //FINE PARTITA
+
             } while (scelta!=0);
+
+            //SALVATAGGIO PARTITA IN CRONOLOGIA
             ofstream file("history.txt", ios::app);
             file << p1 << " " << p2 << endl;;
             file << won1 << " " << won2 << endl;
@@ -101,20 +74,7 @@ int main() {
 
             case 2: {
             clean ();
-            cout << "------------ ELENCO PARTITE ------------" << endl;
-            ifstream file("history.txt");
-            if (!(file >> player1)) {
-                cout << "Nessuna partita salvata" << endl;
-                file.close();
-            } else {
-            ifstream file("history.txt");
-            while (file >> player1) {
-                file >> player2 >> victory1 >> victory2;
-                cout << player1 << " - " << victory1 << " \tVS\t " << player2 << " - " << victory2 << endl;
-            }
-            file.close();
-            }
-            cout << "----------------------------------------" << endl << endl;
+            showHistory();
             break;
             }
 
@@ -131,13 +91,14 @@ int main() {
             clean ();
             cout << "Scelta errata! Dai un'occhiata al menu ;)" << endl << endl;
         }
-        //-------------------------------------------------------------
     } while (scelta1!=0);
 
     return 0;
 }
 
-//FUNZIONI UTILIZZATE
+
+
+//---------------------------------- FUNZIONI UTILIZZATE ----------------------------------
 
 void menu(int &scelta) {
     cout << "----------- BATTAGLIA NAVALE -----------" << endl;
@@ -246,6 +207,40 @@ void posiziona (int n[], string p) {
     clean();
 }
 
+void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[]) {
+    srand(time(NULL));
+    int n = (rand()%2 + 1), ris=0;
+    if (n==1) {  //gioca prima il giocatore 1
+        while (ris!=1) {
+            ris = turno(v1, n2, p1);
+            if (ris==1) {
+                cout << "\nL'ammiraglio " << p1 << " ha vinto!";
+                won1++;
+                break;
+            }
+            ris = turno(v2, n1, p2);
+            if (ris==1) {
+                cout << "\nL'ammiraglio " << p2 << " ha vinto!";
+                won2++;
+            }
+        }
+    } else {    //gioca prima il giocatore 2
+        while (ris!=1) {
+            ris = turno(v2, n1, p2);
+            if (ris==1) {
+                cout << "\nL'ammiraglio " << p2 << " ha vinto!"<< endl << endl;
+                won2++;
+                break;
+            }
+            ris = turno(v1, n2, p1);
+            if (ris==1) {
+                cout << "\nL'ammiraglio " << p1 << " ha vinto!"<< endl << endl;
+                won1++;
+            }
+        }
+    }
+}
+
 int playagain(string p1, string p2, int won1, int won2) {
     int scelta;
     cout << endl << endl << p1 << " - " << won1 << "\t" << p2 << " - " << won2 << endl;
@@ -314,7 +309,7 @@ int turno (int v[], int n[], string p) {
     cout << endl;
     matrix(v);
     cout << "------------------------------------" << endl;
-    wait(3000);
+    //wait(3000);
     clean();
     for (int i=0; i<maxTabella; i++) {
         if (v[i]==1)
@@ -334,4 +329,23 @@ void wait(int n) {
         stop = clock();
     
     //cout << (stop-start)/1000 << "s" << endl;
+}
+
+void showHistory() {
+    string p1, p2;
+    int victory1, victory2;
+    cout << "------------ ELENCO PARTITE ------------" << endl;
+    ifstream file("history.txt");
+    if (!(file >> p1)) {
+        cout << "Nessuna partita salvata" << endl;
+        file.close();
+    } else {
+    ifstream file("history.txt");
+    while (file >> p1) {
+        file >> p2 >> victory1 >> victory2;
+        cout << p1 << " - " << victory1 << " \tVS\t " << p2 << " - " << victory2 << endl;
+    }
+    file.close();
+    }
+    cout << "----------------------------------------" << endl << endl;
 }
