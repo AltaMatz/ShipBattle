@@ -8,16 +8,16 @@ using namespace std;
 #define punti 21
 
 // ---------------------------------- ELENCO FUNZIONI ----------------------------------
-void menu(int &scelta);
-void matrix(int n[]);
-void posiziona (int n[], string p);
-void assegnazione(int n[], string coord);
-int turno (int v[], int n[], string p);
-void wait(int n);
-void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[]);
-int playagain(string p1, string p2, int won1, int won2);
-void clean();
-void showHistory();
+void menu(int &scelta);     //MENU INIZIALE
+void matrix(int n[]);       //CAMPO DI BATTAGLIA
+void posiziona (int n[], string p);     //POSIZIONAMENTO NAVI
+void assegnazione(int n[], string coord);       //TRADUZIONE COORDINATE IN INDICI
+int turno (int v[], int n[], string p);     //TURNO GIOCATORE
+void wait(int n);       //TEMPO DI ATTESA
+void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[]);       //INIZIO PARTITA
+int playagain(string p1, string p2, int won1, int won2);        //GIOCA ANCORA
+void clean();       //PULIZIA TERMINALE
+void showHistory();     //MOSTRA CRONOLOGIA PARTITE
 
 // ---------------------------------- MAIN ----------------------------------
 int main() {
