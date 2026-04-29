@@ -1,21 +1,21 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <ctime>
 using namespace std;
 #define maxTabella 81   //9*9
 #define navi 6
 #define punti 21
 
-//ELENCO FUNZIONI
-void posizionamento (int n[], string p);
 void menu(int &scelta);
 void matrix(int n[]);
+void posiziona (int n[], string p);
 void assegnazione(int n[], string coord);
 int turno (int v[], int n[], string p);
+void wait(int n);
 int playagain(string p1, string p2, int won1, int won2);
 void clean();
 
-//MAIN
 int main() {
     int scelta1=1;
     int victory1, victory2;
@@ -29,15 +29,14 @@ int main() {
             case 1: {
             clean();
             int scelta=1, won1=0, won2=0;
-            string p1, p2, casual;
+            string p1, p2;
+            cout << "\tGIOCATORE 1: ";
+            cin >> p1;
+            cout << "\tGIOCATORE 2: ";
+            cin >> p2;
 
             do {
-                cout << "\tGIOCATORE 1: ";
-                cin >> p1;
-                cout << "\tGIOCATORE 2: ";
-                cin >> p2;
-
-                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella], l, ris=0;
+                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella], ris=0;
                 for (int i=0; i<maxTabella; i++) {
                     n1[i] = 0;
                     n2[i] = 0;
@@ -46,28 +45,17 @@ int main() {
                 }
 
                 //---------------- ASSEGNAZIONE POSIZIONE NAVI ----------------
-                posizionamento(n1, p1);
-                cout << endl;
-                matrix(n1);
-                cout << "\nDigita un tasto e premi invio per nascondere le tue posizioni: ";
-                cin >> casual;
-                clean();
-
-                posizionamento(n2, p2);
-                cout << endl;
-                matrix(n2);
-                cout << "\nDigita un tasto e premi invio per nascondere le tue posizioni: ";
-                cin >> casual;
-                clean();
+                posiziona(n1, p1);
+                posiziona(n2, p2);
                 //-------------------------------------------------------------
 
                 //-------------------------- PARTITA --------------------------
                 srand(time(NULL));
                 int n = rand()%2 + 1;
-                cout << "-------- SIMBOLI TABELLONE --------" << endl; 
+                cout << "---------- SIMBOLI TABELLONE ----------" << endl; 
                 cout << "'X' ---> Nave colpita" << endl;
                 cout << "'O' ---> Nave mancata" << endl;
-                cout << "-----------------------------------" << endl << endl;
+                cout << "---------------------------------------" << endl << endl;
 
                 if (n==1) {  //gioca prima il giocatore 1
                     while (ris!=1) {
@@ -113,7 +101,7 @@ int main() {
 
             case 2: {
             clean ();
-            cout << "---------- ELENCO PARTITE ----------" << endl;
+            cout << "------------ ELENCO PARTITE ------------" << endl;
             ifstream file("history.txt");
             if (!(file >> player1)) {
                 cout << "Nessuna partita salvata" << endl;
@@ -122,11 +110,11 @@ int main() {
             ifstream file("history.txt");
             while (file >> player1) {
                 file >> player2 >> victory1 >> victory2;
-                cout << player1 << " - " << victory1 << "\t" << player2 << " - " << victory2 << endl;
+                cout << player1 << " - " << victory1 << " \tVS\t " << player2 << " - " << victory2 << endl;
             }
             file.close();
             }
-            cout << "------------------------------------" << endl << endl;
+            cout << "----------------------------------------" << endl << endl;
             break;
             }
 
@@ -149,13 +137,15 @@ int main() {
     return 0;
 }
 
+//FUNZIONI UTILIZZATE
+
 void menu(int &scelta) {
-    cout << "--------- BATTAGLIA NAVALE ---------" << endl;
+    cout << "----------- BATTAGLIA NAVALE -----------" << endl;
     cout << "1) Inizia una nuova partita" << endl;
     cout << "2) Visualizza cronologia partite" << endl;
     cout << "3) Cancella cronologia partite" << endl;
     cout << "0) Esci dal gioco" << endl;
-    cout << "------------------------------------" << endl;
+    cout << "----------------------------------------" << endl;
     cout << "SCELTA: ";
     cin >> scelta;
     cout << endl;
@@ -167,6 +157,93 @@ void clean() {
     #else
         system("clear");
     #endif
+}
+
+void posiziona (int n[], string p) {
+    string c;
+    int l=5;
+    cout << endl << p << ", scegli le coordinate delle tue navi!\n";
+    for (int j=0; j<navi; j++) {                            //GIOCATORE 2
+        string coord, successiva, precedente, sopra, sotto, prov;    
+        cout << endl;
+        matrix(n);
+
+        //COORDINATA 1
+        cout << "\nNAVE DA "<<l<<" - Coordinata 1: ";
+        cin >> coord;
+        while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) {
+            cout << "Coordinata inesistente!\nNAVE DA "<<l<<" - Coordinata 1: ";
+            cin >> coord;
+        }
+        prov = coord;
+        assegnazione(n, coord);
+
+        //COORDINATA 2
+        successiva += coord[0];
+        successiva += coord[1] + 1;
+        precedente += coord[0];
+        precedente += coord[1] - 1;
+        sopra += coord[0] - 1;
+        sopra += coord[1];
+        sotto += coord[0] + 1;
+        sotto += coord[1];
+
+        cout << "NAVE DA "<<l<<" - Coordinata 2: ";
+        cin >> coord;
+        while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente && coord!=sopra && coord!=sotto)) {
+            cout << "Coordinata errata! Inserisci una coordinata adiacente!\nNAVE DA "<<l<<" - Coordinata 2: ";
+            cin >> coord;
+        }
+        assegnazione(n, coord);
+
+        //COORDINATE 3-4-5
+        for (int i=3; i<=l; i++) {
+            if (coord==successiva) {
+                successiva[1] += 1;
+                cout << "NAVE DA "<<l<<" - Coordinata " << i << ": ";
+                cin >> coord;
+                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente)) {
+                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella riga "<<prov[0]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
+                    cin >> coord;
+                }
+                assegnazione(n, coord);
+            } else if (coord==precedente) {
+                precedente[1] -= 1;
+                cout << "NAVE DA "<<l<<" - Coordinata " << i << ": ";
+                cin >> coord;
+                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente)) {
+                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella riga "<<prov[0]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
+                    cin >> coord;
+                }
+                assegnazione(n, coord);
+            } else if (coord==sopra) {
+                sopra[0] -= 1;
+                cout << "NAVE DA "<<l<<" - Coordinata " << i << ": ";
+                cin >> coord;
+                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=sopra && coord!=sotto)) {
+                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella colonna "<<prov[1]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
+                    cin >> coord;
+                }
+                assegnazione(n, coord);
+            } else {
+                sotto[0] += 1;
+                cout << "NAVE DA "<<l<<" - Coordinata " << i << ": ";
+                cin >> coord;
+                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=sopra && coord!=sotto)) {
+                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella colonna "<<prov[1]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
+                    cin >> coord;
+                }
+                assegnazione(n, coord);
+            }
+        }
+        if (j==0 || j==2 || j==4)
+        l--;
+    }
+    cout << endl;
+    matrix(n);
+    cout << "\nDigita un tasto e premi invio per nascondere le tue posizioni: ";
+    cin >> c;
+    clean();
 }
 
 int playagain(string p1, string p2, int won1, int won2) {
@@ -237,6 +314,8 @@ int turno (int v[], int n[], string p) {
     cout << endl;
     matrix(v);
     cout << "------------------------------------" << endl;
+    wait(3000);
+    clean();
     for (int i=0; i<maxTabella; i++) {
         if (v[i]==1)
             cnt++;
@@ -248,83 +327,11 @@ int turno (int v[], int n[], string p) {
         return 0;
 }
 
-void posizionamento(int n[], string p) {
-    int l=5;
-    cout << endl << p << ", scegli le coordinate delle tue navi!\n";
-    for (int j=0; j<navi; j++) {                            //GIOCATORE 1
-        string coord, successiva, precedente, sopra, sotto, prov;    
-        cout << endl;
-        matrix(n);
-
-        //COORDINATA 1
-        cout << "\nNAVE DA "<<l<<" - Coordinata 1: ";
-        cin >> coord;
-        while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) {
-        cout << "Coordinata inesistente!\nNAVE DA "<<l<<" - Coordinata 1: ";
-        cin >> coord;
-        }
-        prov = coord;
-        assegnazione(n, coord);
-
-        //COORDINATA 2
-        successiva += coord[0];
-        successiva += coord[1] + 1;
-        precedente += coord[0];
-        precedente += coord[1] - 1;
-        sopra += coord[0] - 1;
-        sopra += coord[1];
-        sotto += coord[0] + 1;
-        sotto += coord[1];
-
-        cout << "\nNAVE DA "<<l<<" - Coordinata 2: ";
-        cin >> coord;
-        while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente && coord!=sopra && coord!=sotto)) {
-        cout << "Coordinata errata! Inserisci una coordinata adiacente!\nNAVE DA "<<l<<" - Coordinata 2: ";
-            cin >> coord;
-        }
-        assegnazione(n, coord);
-
-        //COORDINATE 3-4-5
-        for (int i=3; i<=l; i++) {
-            if (coord==successiva) {
-                successiva[1] += 1;
-                cout << "\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                cin >> coord;
-                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente)) {
-                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella riga "<<prov[0]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                    cin >> coord;
-                }
-                assegnazione(n, coord);
-            } else if (coord==precedente) {
-                precedente[1] -= 1;
-                cout << "\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                cin >> coord;
-                    while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=successiva && coord!=precedente)) {
-                        cout << "Coordinata errata! Inserisci una coordinata adiacente nella riga "<<prov[0]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                        cin >> coord;
-                    }
-                    assegnazione(n, coord);
-            } else if (coord==sopra) {
-                sopra[0] -= 1;
-                cout << "\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                cin >> coord;
-                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=sopra && coord!=sotto)) {
-                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella colonna "<<prov[1]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                    cin >> coord;
-                }
-                assegnazione(n, coord);
-            } else {
-                sotto[0] += 1;
-                cout << "\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                cin >> coord;
-                while ((coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) || (coord!=sopra && coord!=sotto)) {
-                    cout << "Coordinata errata! Inserisci una coordinata adiacente nella colonna "<<prov[1]<<"!\nNAVE DA "<<l<<" - Coordinata " << i << ": ";
-                    cin >> coord;
-                }
-                assegnazione(n, coord);
-            }
-        }
-        if (j==0 || j==2 || j==4)
-            l--;
-    }
+void wait(int n) {
+    clock_t start = clock();
+    clock_t stop = start;
+    while ((stop-start)<n)
+        stop = clock();
+    
+    //cout << (stop-start)/1000 << "s" << endl;
 }
