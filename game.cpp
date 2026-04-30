@@ -13,6 +13,7 @@ void menu(int &scelta);     //MENU INIZIALE
 void menuPos();     //ISTRUZIONI POSIZIONAMENTO NAVI
 void matrix(int n[]);       //CAMPO DI BATTAGLIA
 void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6);     //POSIZIONAMENTO NAVI
+bool collision (int n[], int indici[], string boat, int count);
 int assegnazione(int n[], string coord);       //TRADUZIONE COORDINATE IN INDICI
 int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6);     //TURNO GIOCATORE
 void cancella (string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6, string coord);       //RICONOSCIMENTO NAVI DISTRUTTE
@@ -68,7 +69,7 @@ int main() {
 
                 menuPos();
                 posiziona(n2, p2, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
-                cout << "SALVATAGGIO INFORMAZIONI IN ";
+                cout << "\nSALVATAGGIO INFORMAZIONI IN ";
                 for (int i=5; i>0; i--) {
                     cout << i;
                     wait(250);
@@ -163,7 +164,10 @@ void clean() {
 void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6) {
     int l=5;
     cout << endl << p << ", scegli le coordinate delle tue navi!\n";
-    for (int j=0; j<navi; j++) {                            //GIOCATORE 2
+    for (int j=0; j<navi; j++) {
+    start_for:
+        int indici[5];
+        int count=0;
         string coord, successiva, precedente, sopra, sotto, prov;    
         cout << endl;
         matrix(n);
@@ -176,19 +180,36 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
             cin >> coord;
         }
         prov = coord;
-        assegnazione(n, coord);
-        if (j==0)
+        indici[count] = assegnazione(n, coord);
+
+        if (j==0) {
+            if (collision (n, indici, boat1, count))
+                goto start_for;
             boat1 += coord;
-        else if (j==1)
+        } else if (j==1) {
+            if (collision (n, indici, boat2, count))
+                goto start_for;
             boat2 += coord;
-        else if (j==2)
+        } else if (j==2) {
+            if (collision (n, indici, boat3, count))
+                goto start_for;
             boat3 += coord;
-        else if (j==3)
+        } else if (j==3) {
+            if (collision (n, indici, boat4, count))
+                goto start_for;
             boat4 += coord;
-        else if (j==4)
+        } else if (j==4) {
+            if (collision (n, indici, boat5, count))
+                goto start_for;
             boat5 += coord;
-        else
+        } else {
+            if (collision (n, indici, boat6, count))
+                goto start_for;
             boat6 += coord;
+        }
+        
+        n[indici[count]] = 1;
+        count++;
 
         //COORDINATA 2
         successiva += coord[0];
@@ -221,19 +242,36 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
 
         } while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57);
 
-        assegnazione(n, coord);
-        if (j==0)
+        indici[count] = assegnazione(n, coord);
+
+        if (j==0) {
+            if (collision (n, indici, boat1, count))
+                goto start_for;
             boat1 += coord;
-        else if (j==1)
+        } else if (j==1) {
+            if (collision (n, indici, boat2, count))
+                goto start_for;
             boat2 += coord;
-        else if (j==2)
+        } else if (j==2) {
+            if (collision (n, indici, boat3, count))
+                goto start_for;
             boat3 += coord;
-        else if (j==3)
+        } else if (j==3) {
+            if (collision (n, indici, boat4, count))
+                goto start_for;
             boat4 += coord;
-        else if (j==4)
+        } else if (j==4) {
+            if (collision (n, indici, boat5, count))
+                goto start_for;
             boat5 += coord;
-        else
+        } else {
+            if (collision (n, indici, boat6, count))
+                goto start_for;
             boat6 += coord;
+        }
+        
+        n[indici[count]] = 1;
+        count++;
 
         //COORDINATE 3-4-5
         for (int i=3; i<=l; i++) {
@@ -281,18 +319,33 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
                         cout << "FUORI DAI BORDI! Inserisci uno dei comandi WS" << endl;
                 } while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57);
             }
-            if (j==0)
-                boat1 += coord;
-            else if (j==1)
-                boat2 += coord;
-            else if (j==2)
-                boat3 += coord;
-            else if (j==3)
-                boat4 += coord;
-            else
-                boat5 += coord;
 
-            assegnazione(n, coord);
+            indici[count] = assegnazione(n, coord);
+
+            if (j==0) {
+                if (collision (n, indici, boat1, count))
+                    goto start_for;
+                boat1 += coord;
+            } else if (j==1) {
+                if (collision (n, indici, boat2, count))
+                    goto start_for;
+                boat2 += coord;
+            } else if (j==2) {
+                if (collision (n, indici, boat3, count))
+                    goto start_for;
+                boat3 += coord;
+            } else if (j==3) {
+                if (collision (n, indici, boat4, count))
+                    goto start_for;
+                boat4 += coord;
+            } else {
+                if (collision (n, indici, boat5, count))
+                    goto start_for;
+                boat5 += coord;
+            }
+            
+            n[indici[count]] = 1;
+            count++;
         }
         if (j==0 || j==2 || j==4)
             l--;
@@ -302,18 +355,32 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
     //cout << endl << boat1 << " " << boat2 << " " << boat3 << " " << boat4 << " " << boat5 << " " << boat6;
 }
 
+bool collision (int n[], int indici[], string boat, int count) {
+    int indice;
+    indice = indici[count];
+    if (n[indice] == 1) {
+        cout << "\nCOLLISIONE RILEVATA! Riposiziona la tua nave da capo" << endl;
+        boat.clear();
+        for (int i=0; i<count; i++)
+            n[indici[i]] = 0;
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[], string &boat1_1, string &boat2_1, string &boat3_1, string &boat4_1, string &boat5_1, string &boat6_1, string &boat1_2, string &boat2_2, string &boat3_2, string &boat4_2, string &boat5_2, string &boat6_2) {
     srand(time(NULL));
     int n = (rand()%2 + 1), ris=0;
     if (n==1) {  //gioca prima il giocatore 1
         while (ris!=1) {
-            ris = turno(v1, n2, p1, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
+            ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
             if (ris==1) {
                 cout << "\nL'ammiraglio " << p1 << " ha vinto!";
                 won1++;
                 break;
             }
-            ris = turno(v2, n1, p2, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
+            ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
             if (ris==1) {
                 cout << "\nL'ammiraglio " << p2 << " ha vinto!";
                 won2++;
@@ -321,13 +388,13 @@ void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int
         }
     } else {    //gioca prima il giocatore 2
         while (ris!=1) {
-            ris = turno(v2, n1, p2, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
+            ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
             if (ris==1) {
                 cout << "\nL'ammiraglio " << p2 << " ha vinto!"<< endl << endl;
                 won2++;
                 break;
             }
-            ris = turno(v1, n2, p1, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
+            ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
             if (ris==1) {
                 cout << "\nL'ammiraglio " << p1 << " ha vinto!"<< endl << endl;
                 won1++;
@@ -378,7 +445,6 @@ int assegnazione(int n[], string coord) {
     N2 = coord[1] - 48;
     indice = (9*N1 + N2) - 1;
 
-    n[indice] = 1;
     return indice;
 }
 
