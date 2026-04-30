@@ -299,6 +299,7 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
     }
     cout << endl;
     matrix(n);
+    //cout << endl << boat1 << " " << boat2 << " " << boat3 << " " << boat4 << " " << boat5 << " " << boat6;
 }
 
 void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int n1[], int n2[], string &boat1_1, string &boat2_1, string &boat3_1, string &boat4_1, string &boat5_1, string &boat6_1, string &boat1_2, string &boat2_2, string &boat3_2, string &boat4_2, string &boat5_2, string &boat6_2) {
@@ -385,6 +386,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat1.length(); i=i+2) {
         if (coord == boat1.substr(i, 2)) {
             boat1.erase(i, 2);
+            i = i-2;
             if (boat1.empty()) {
                 cout << "\n\tNAVE DA 5 DISTRUTTA!" << endl;
             }
@@ -394,6 +396,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat2.length(); i=i+2) {
         if (coord == boat2.substr(i, 2)) {
             boat2.erase(i, 2);
+            i = i-2;
             if (boat2.empty()) {
                 cout << "\n\tNAVE DA 4 DISTRUTTA!" << endl;
             }
@@ -403,6 +406,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat3.length(); i=i+2) {
         if (coord == boat3.substr(i, 2)) {
             boat3.erase(i, 2);
+            i = i-2;
             if (boat3.empty()) {
                 cout << "\n\tNAVE DA 4 DISTRUTTA!" << endl;
             }
@@ -412,6 +416,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat4.length(); i=i+2) {
         if (coord == boat4.substr(i, 2)) {
             boat4.erase(i, 2);
+            i = i-2;
             if (boat4.empty()) {
                 cout << "\n\tNAVE DA 3 DISTRUTTA!" << endl;
             }
@@ -421,6 +426,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat5.length(); i=i+2) {
         if (coord == boat5.substr(i, 2)) {
             boat5.erase(i, 2);
+            i = i-2;
             if (boat5.empty()) {
                 cout << "\n\tNAVE DA 3 DISTRUTTA!" << endl;
             }
@@ -430,6 +436,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
     for (int i=0; i<boat6.length(); i=i+2) {
         if (coord == boat6.substr(i, 2)) {
             boat6.erase(i, 2);
+            i = i-2;
             if (boat6.empty()) {
                 cout << "\n\tNAVE DA 2 DISTRUTTA!" << endl;
             }
