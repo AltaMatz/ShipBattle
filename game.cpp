@@ -7,6 +7,12 @@ using namespace std;
 #define maxTabella 81   //9*9
 #define navi 6
 #define punti 21
+//COLORI ANSI
+#define ROSSO "\033[31m"
+#define VERDE "\033[32m"
+#define GIALLO "\033[33m"
+#define BLU "\033[34m"
+#define DEFAULT "\033[0m"
 
 // ---------------------------------- ELENCO FUNZIONI ----------------------------------
 void menu(int &scelta);     //MENU INIZIALE
@@ -41,7 +47,7 @@ int main() {
             cin >> p1;
             cout << "\tGIOCATORE 2: ";
             cin >> p2;
-            clean();
+            cout << endl;
 
             do {
                 int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella];
@@ -55,7 +61,7 @@ int main() {
                 //ASSEGNAZIONE POSIZIONE NAVI
                 menuPos();
                 posiziona(n1, p1, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
-                cout << "\nSALVATAGGIO INFORMAZIONI IN ";
+                cout << "\n\nSALVATAGGIO INFORMAZIONI IN ";
                 for (int i=5; i>0; i--) {
                     cout << i;
                     wait(250);
@@ -131,11 +137,11 @@ int main() {
 //---------------------------------- FUNZIONI UTILIZZATE ----------------------------------
 
 void menu(int &scelta) {
-    cout << "----------- BATTAGLIA NAVALE -----------" << endl;
-    cout << "1) Inizia una nuova partita" << endl;
+    cout << "----------- " << BLU << "BATTAGLIA NAVALE" << DEFAULT << " -----------" << endl;
+    cout << "1) " << VERDE << "Inizia una nuova partita" << DEFAULT << endl;
     cout << "2) Visualizza cronologia partite" << endl;
     cout << "3) Cancella cronologia partite" << endl;
-    cout << "0) Esci dal gioco" << endl;
+    cout << "0) " << ROSSO << "Esci dal gioco" << DEFAULT << endl;
     cout << "----------------------------------------" << endl;
     cout << "SCELTA: ";
     cin >> scelta;
@@ -143,7 +149,7 @@ void menu(int &scelta) {
 }
 
 void menuPos() {
-    cout << "------ ISTRUZIONI POSIZIONAMENTO ------" << endl; 
+    cout << "------ " << BLU << "ISTRUZIONI POSIZIONAMENTO" << DEFAULT << " ------" << endl; 
     cout << "1) Inserire la prima coordinata" << endl;
     cout << "2) Costruire il resto con comandi WASD:" << endl;
     cout << "\tW ---> Coordinata sopra" << endl;
@@ -418,25 +424,24 @@ int playagain(string p1, string p2, int won1, int won2) {
 }
 
 void matrix(int n[]) {
-    string s;
-    for (int i=0; i<maxTabella; i++) {
-        if (n[i]==0)
-            s+=" ";
-        else if (n[i]==1)
-            s+="X";
-        else   
-            s+="O";
-    }
     cout << "\t   1 2 3 4 5 6 7 8 9" << endl;
-    cout << "\tA |"<<s[0]<<"|"<<s[1]<<"|"<<s[2]<<"|"<<s[3]<<"|"<<s[4]<<"|"<<s[5]<<"|"<<s[6]<<"|"<<s[7]<<"|"<<s[8]<<"|" << endl;
-    cout << "\tB |"<<s[9]<<"|"<<s[10]<<"|"<<s[11]<<"|"<<s[12]<<"|"<<s[13]<<"|"<<s[14]<<"|"<<s[15]<<"|"<<s[16]<<"|"<<s[17]<<"|" << endl;
-    cout << "\tC |"<<s[18]<<"|"<<s[19]<<"|"<<s[20]<<"|"<<s[21]<<"|"<<s[22]<<"|"<<s[23]<<"|"<<s[24]<<"|"<<s[25]<<"|"<<s[26]<<"|" << endl;
-    cout << "\tD |"<<s[27]<<"|"<<s[28]<<"|"<<s[29]<<"|"<<s[30]<<"|"<<s[31]<<"|"<<s[32]<<"|"<<s[33]<<"|"<<s[34]<<"|"<<s[35]<<"|" << endl;
-    cout << "\tE |"<<s[36]<<"|"<<s[37]<<"|"<<s[38]<<"|"<<s[39]<<"|"<<s[40]<<"|"<<s[41]<<"|"<<s[42]<<"|"<<s[43]<<"|"<<s[44]<<"|" << endl;
-    cout << "\tF |"<<s[45]<<"|"<<s[46]<<"|"<<s[47]<<"|"<<s[48]<<"|"<<s[49]<<"|"<<s[50]<<"|"<<s[51]<<"|"<<s[52]<<"|"<<s[53]<<"|" << endl;
-    cout << "\tG |"<<s[54]<<"|"<<s[55]<<"|"<<s[56]<<"|"<<s[57]<<"|"<<s[58]<<"|"<<s[59]<<"|"<<s[60]<<"|"<<s[61]<<"|"<<s[62]<<"|" << endl;
-    cout << "\tH |"<<s[63]<<"|"<<s[64]<<"|"<<s[65]<<"|"<<s[66]<<"|"<<s[67]<<"|"<<s[68]<<"|"<<s[69]<<"|"<<s[70]<<"|"<<s[71]<<"|" << endl;
-    cout << "\tI |"<<s[72]<<"|"<<s[73]<<"|"<<s[74]<<"|"<<s[75]<<"|"<<s[76]<<"|"<<s[77]<<"|"<<s[78]<<"|"<<s[79]<<"|"<<s[80]<<"|" << endl;
+    
+    char riga = 'A';
+    for (int i = 0; i < 9; i++) {
+        cout << "\t" << riga << " |";
+        for (int j = 0; j < 9; j++) {
+            int index = i * 9 + j;
+            if (n[index]==0)
+                cout << " " << "|";
+            else if (n[index]==1)
+                cout << ROSSO << "X" << DEFAULT << "|";
+            else   
+                cout << BLU << "O" << DEFAULT << "|";
+            
+        }
+        cout << endl;
+        riga++;
+    }
 }
 
 int assegnazione(int n[], string coord) {
