@@ -61,7 +61,7 @@ int main() {
                 //ASSEGNAZIONE POSIZIONE NAVI
                 menuPos();
                 posiziona(n1, p1, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
-                cout << "\n\nSALVATAGGIO INFORMAZIONI IN ";
+                cout << GIALLO << "\n\nSALVATAGGIO INFORMAZIONI IN ";
                 for (int i=5; i>0; i--) {
                     cout << i;
                     wait(250);
@@ -71,6 +71,7 @@ int main() {
                     }
                     cout << " ";
                 }
+                cout << DEFAULT;
                 clean();
 
                 menuPos();
@@ -89,8 +90,8 @@ int main() {
 
                 //INIZIO PARTITA
                 cout << "---------- SIMBOLI TABELLONE ----------" << endl; 
-                cout << "'X' ---> Nave colpita" << endl;
-                cout << "'O' ---> Nave mancata" << endl;
+                cout << ROSSO << " X" << DEFAULT << "\t--->\tNave colpita" << endl;
+                cout << BLU << " O" << DEFAULT << "\t--->\tNave mancata" << endl;
                 cout << "---------------------------------------" << endl << endl;
 
                 start(p1, p2, won1, won2, v1, v2, n1, n2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
@@ -382,13 +383,13 @@ void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int
         while (ris!=1) {
             ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
             if (ris==1) {
-                cout << "\nL'ammiraglio " << p1 << " ha vinto!";
+                cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!";
                 won1++;
                 break;
             }
             ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
             if (ris==1) {
-                cout << "\nL'ammiraglio " << p2 << " ha vinto!";
+                cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!";
                 won2++;
             }
         }
@@ -396,13 +397,13 @@ void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int
         while (ris!=1) {
             ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1);
             if (ris==1) {
-                cout << "\nL'ammiraglio " << p2 << " ha vinto!"<< endl << endl;
+                cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!"<< endl << endl;
                 won2++;
                 break;
             }
             ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
             if (ris==1) {
-                cout << "\nL'ammiraglio " << p1 << " ha vinto!"<< endl << endl;
+                cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!"<< endl << endl;
                 won1++;
             }
         }
@@ -459,7 +460,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat1.erase(i, 2);
             i = i-2;
             if (boat1.empty()) {
-                cout << "\n\tNAVE DA 5 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 5 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -469,7 +470,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat2.erase(i, 2);
             i = i-2;
             if (boat2.empty()) {
-                cout << "\n\tNAVE DA 4 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 4 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -479,7 +480,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat3.erase(i, 2);
             i = i-2;
             if (boat3.empty()) {
-                cout << "\n\tNAVE DA 4 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 4 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -489,7 +490,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat4.erase(i, 2);
             i = i-2;
             if (boat4.empty()) {
-                cout << "\n\tNAVE DA 3 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 3 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -499,7 +500,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat5.erase(i, 2);
             i = i-2;
             if (boat5.empty()) {
-                cout << "\n\tNAVE DA 3 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 3 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -509,7 +510,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
             boat6.erase(i, 2);
             i = i-2;
             if (boat6.empty()) {
-                cout << "\n\tNAVE DA 2 DISTRUTTA!" << endl;
+                cout << ROSSO << "\n\tNAVE DA 2 DISTRUTTA!" << DEFAULT << endl;
             }
             return;
         }
@@ -519,9 +520,9 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
 int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6) {
     int N1, N2, indice, cnt=0;
     string coord;
-    cout << "------------------------------------" << endl;
+    cout << "---------------------------------------" << endl;
     matrix(v);
-    cout << "\nAmmiraglio " << p << ", tocca a te!" << endl;
+    cout << "\nAmmiraglio " << GIALLO << p << DEFAULT << ", tocca a te!" << endl;
     cout << "COORDINATA DA BOMBARDARE: ";
     cin >> coord;
     while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) {
@@ -539,7 +540,7 @@ int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boa
     cout << endl;
     matrix(v);
     cancella (boat1, boat2, boat3, boat4, boat5, boat6, coord);
-    cout << "------------------------------------" << endl;
+    cout << "---------------------------------------" << endl;
     wait(2500);
     clean();
     for (int i=0; i<maxTabella; i++) {
@@ -565,7 +566,7 @@ void wait(int n) {
 void showHistory() {
     string p1, p2;
     int victory1, victory2;
-    cout << "------------ ELENCO PARTITE ------------" << endl;
+    cout << "------------ " << GIALLO << "ELENCO PARTITE" << DEFAULT << " ------------" << endl;
     ifstream file("history.txt");
     if (!(file >> p1)) {
         cout << "Nessuna partita salvata" << endl;
