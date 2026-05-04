@@ -76,7 +76,7 @@ int main() {
 
                 menuPos();
                 posiziona(n2, p2, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
-                cout << "\nSALVATAGGIO INFORMAZIONI IN ";
+                cout << GIALLO << "\n\nSALVATAGGIO INFORMAZIONI IN ";
                 for (int i=5; i>0; i--) {
                     cout << i;
                     wait(250);
@@ -86,12 +86,13 @@ int main() {
                     }
                     cout << " ";
                 }
+                cout << DEFAULT;
                 clean();
 
                 //INIZIO PARTITA
-                cout << "---------- SIMBOLI TABELLONE ----------" << endl; 
-                cout << ROSSO << " X" << DEFAULT << "\t--->\tNave colpita" << endl;
-                cout << BLU << " O" << DEFAULT << "\t--->\tNave mancata" << endl;
+                cout << "---------- " << GIALLO << "SIMBOLI TABELLONE" << DEFAULT << " ----------" << endl; 
+                cout << ">" << ROSSO << " X" << DEFAULT << "\t--->\tNave colpita" << endl;
+                cout << ">" << BLU << " O" << DEFAULT << "\t--->\tNave mancata" << endl;
                 cout << "---------------------------------------" << endl << endl;
 
                 start(p1, p2, won1, won2, v1, v2, n1, n2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2);
@@ -170,17 +171,17 @@ void clean() {
 
 void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6) {
     int l=5;
-    cout << endl << p << ", scegli le coordinate delle tue navi!\n";
+    cout << endl << GIALLO << p << DEFAULT << ", scegli le coordinate delle tue navi!\n" << endl;
+    matrix(n);
+    cout << endl;
     for (int j=0; j<navi; j++) {
     start_for:
         int indici[5];
         int count=0;
         string coord, successiva, precedente, sopra, sotto, prov;    
-        cout << endl;
-        matrix(n);
 
         //COORDINATA 1
-        cout << "\nNAVE DA "<<l<<" - Coordinata 1: ";
+        cout << "NAVE DA "<<l<<" - Coordinata 1: ";
         cin >> coord;
         while (coord.length()!=2 || coord[0]<65 || coord[0]>73 || coord[1]<49 || coord[1]>57) {
             cout << "Coordinata inesistente!\nNAVE DA "<<l<<" - Coordinata 1: ";
@@ -217,6 +218,8 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
         
         n[indici[count]] = 1;
         count++;
+        clean();
+        matrix(n);
 
         //COORDINATA 2
         successiva += coord[0];
@@ -229,7 +232,7 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
         sotto += coord[1];
 
         do {
-            cout << "NAVE DA "<<l<<" - Coordinata 2: ";
+            cout << "\nNAVE DA "<<l<<" - Coordinata 2: ";
             cin >> coord;
             while (coord.length()!=1 || (coord!="W" && coord!="w" && coord!="S" && coord!="s" && coord!="D" && coord!="d" && coord!="A" && coord!="a")) {
                 cout << "Coordinata errata! Inserisci uno dei comandi WASD\nNAVE DA "<<l<<" - Coordinata 2: ";
@@ -279,6 +282,9 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
         
         n[indici[count]] = 1;
         count++;
+        clean();
+        matrix(n);
+        cout << endl;
 
         //COORDINATE 3-4-5
         for (int i=3; i<=l; i++) {
@@ -353,12 +359,13 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
             
             n[indici[count]] = 1;
             count++;
+            clean();
+            matrix(n);
+            cout << endl;
         }
         if (j==0 || j==2 || j==4)
             l--;
     }
-    cout << endl;
-    matrix(n);
     //cout << endl << boat1 << " " << boat2 << " " << boat3 << " " << boat4 << " " << boat5 << " " << boat6;
 }
 
