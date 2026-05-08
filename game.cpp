@@ -465,11 +465,13 @@ void matrix(int n[], string &b1, string &b2, string &b3, string &b4, string &b5,
             else   
                 cout << BLU << "O" << DEFAULT << "|";
 
+            if (j==8 && i==2)
+                cout << "\t\t------------- " << GIALLO << "RADAR" << DEFAULT << " -------------";
             if (j==8 && i==3) {
                 if (b1.empty())
-                    cout << ROSSO << "\tNAVE DA 5" << DEFAULT << " - ";
+                    cout << ROSSO << "\t\tNAVE DA 5" << DEFAULT << " - ";
                 else
-                    cout << VERDE << "\tNAVE DA 5" << DEFAULT << " - ";
+                    cout << VERDE << "\t\tNAVE DA 5" << DEFAULT << " - ";
                 if (b2.empty())
                     cout << ROSSO << "NAVE DA 4" << DEFAULT << " - ";
                 else
@@ -481,9 +483,9 @@ void matrix(int n[], string &b1, string &b2, string &b3, string &b4, string &b5,
             }                  
             if (j==8 && i==5) {
                 if (b4.empty())
-                    cout << ROSSO << "\tNAVE DA 3" << DEFAULT << " - ";
+                    cout << ROSSO << "\t\tNAVE DA 3" << DEFAULT << " - ";
                 else
-                    cout << VERDE << "\tNAVE DA 3" << DEFAULT << " - ";
+                    cout << VERDE << "\t\tNAVE DA 3" << DEFAULT << " - ";
                 if (b5.empty())
                     cout << ROSSO << "NAVE DA 3" << DEFAULT << " - ";
                 else
@@ -493,6 +495,8 @@ void matrix(int n[], string &b1, string &b2, string &b3, string &b4, string &b5,
                 else
                     cout << VERDE << "NAVE DA 2" << DEFAULT;
             }
+            if (j==8 && i==6)
+                cout << "\t\t---------------------------------";
         }
         cout << endl;
         riga++;
