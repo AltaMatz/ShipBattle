@@ -18,9 +18,9 @@ using namespace std;
 void menu(int&);    //MENU INIZIALE
 void menuPos1();    //ISTRUZIONI POSIZIONAMENTO COORD.1
 void menuPos2();    //ISTRUZIONI POSIZIONAMENTO COORD.2-3-4-5
-void matrix(int[]); //CAMPO DI BATTAGLIA
+void matrix(int[], string&, string&, string&, string&, string&, string&);   //CAMPO DI BATTAGLIA
 void posiziona (int[], string, string&, string&, string&, string&, string&, string&);   //POSIZIONAMENTO NAVI
-bool collision (int[], int[], string, int); //RILEVA COLLISIONE
+bool collision (int[], int[], string&, int); //RILEVA COLLISIONE
 int assegnazione(int[], string);    //TRADUZIONE COORDINATA IN INDICE
 int turno (int[], int[], string, string&, string&, string&, string&, string&, string&, int&); //TURNO GIOCATORE
 void cancella (string&, string&, string&, string&, string&, string&, string);   //RICONOSCIMENTO NAVI DISTRUTTE
@@ -33,7 +33,7 @@ void showHistory(); //MOSTRA CRONOLOGIA PARTITE
 // ---------------------------------- MAIN ----------------------------------
 int main() {
     int scelta1=1;
-    int victory1, victory2, score1=0, score2=0;
+    int victory1, victory2, total_score1=0, total_score2=0;
     do {
         menu(scelta1);
         switch (scelta1) {
@@ -43,7 +43,7 @@ int main() {
             case 1: {
             clean();
             int scelta=1, won1=0, won2=0;
-            string p1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2;
+            string p1, p2;
             cout << "------ " << GIALLO << "Inserisci i nickname dei giocatori" << DEFAULT << " ------\n" << endl;
             cout << "\tGIOCATORE 1: ";
             cin >> p1;
@@ -52,7 +52,8 @@ int main() {
             clean();
 
             do {
-                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella];
+                string boat1_1="", boat2_1="", boat3_1="", boat4_1="", boat5_1="", boat6_1="", boat1_2="", boat2_2="", boat3_2="", boat4_2="", boat5_2="", boat6_2="";
+                int n1[maxTabella], n2[maxTabella], v1[maxTabella], v2[maxTabella], score1=0, score2=0;
                 for (int i=0; i<maxTabella; i++) {
                     n1[i] = 0;
                     n2[i] = 0;
@@ -99,6 +100,8 @@ int main() {
                 scelta = playagain(p1,  p2, won1, won2);
                 clean();
                 //FINE PARTITA
+                total_score1 += score1;
+                total_score2 += score2;
 
             } while (scelta!=0);
 
@@ -106,7 +109,7 @@ int main() {
             ofstream file("history.txt", ios::app);
             file << p1 << " " << p2 << endl;;
             file << won1 << " " << won2 << endl;
-            file << score1 << " " << score2 << endl;
+            file << total_score1 << " " << total_score2 << endl;
             file.close();
             break;
             }
@@ -184,7 +187,7 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
     for (int j=0; j<navi; j++) {
     start_for:
         menuPos1();
-        matrix(n);
+        matrix(n, boat1, boat2, boat3, boat4, boat5, boat6);
         cout << endl;
         int indici[5];
         int count=0;
@@ -230,7 +233,7 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
         count++;
         clean();
         menuPos2();
-        matrix(n);
+        matrix(n, boat1, boat2, boat3, boat4, boat5, boat6);
 
         //COORDINATA 2
         successiva += coord[0];
@@ -295,7 +298,7 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
         count++;
         clean();
         menuPos2();
-        matrix(n);
+        matrix(n, boat1, boat2, boat3, boat4, boat5, boat6);
         cout << endl;
 
         //COORDINATE 3-4-5
@@ -374,22 +377,23 @@ void posiziona (int n[], string p, string &boat1, string &boat2, string &boat3, 
             clean();
             if ((l==5 && i<5) || (l==4 && i<4) || (l==3 && i<3)) {
                 menuPos2();
-                matrix(n);
+                matrix(n, boat1, boat2, boat3, boat4, boat5, boat6);
                 cout << endl;
             }
         }
         if (j==0 || j==2 || j==4)
             l--;
     }
+    //cout << endl << "DEBUG: " << boat1 << " " << boat2 << " " << boat3 << " " << boat4 << " " << boat5 << " " << boat6;
 }
 
-bool collision (int n[], int indici[], string boat, int count) {
+bool collision (int n[], int indici[], string &boat, int count) {
     clean();
     int indice;
     indice = indici[count];
     if (n[indice] == 1) {
         cout << ROSSO << "\nCOLLISIONE RILEVATA! Riposiziona la tua nave da capo" << DEFAULT << endl << endl;
-        boat.clear();
+        boat = "";
         for (int i=0; i<count; i++)
             n[indici[i]] = 0;
         return true;
@@ -434,9 +438,9 @@ void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int
 
 int playagain(string p1, string p2, int won1, int won2) {
     int scelta;
-    cout << endl << endl << p1 << " - " << won1 << "\t" << p2 << " - " << won2 << endl;
-    cout << "\nVuoi giocare ancora?\n1 --> SI\n0 --> NO" << endl;
-    cout << "SCELTA: ";
+    cout << endl << endl << p1 << " - " << VERDE << won1 << DEFAULT << "\t" << p2 << " - " << VERDE << won2 << DEFAULT << endl;
+    cout << "\nVuoi giocare ancora?\n" << BLU << "1" << DEFAULT << " --> SI\n" << ROSSO << "0" << DEFAULT << " --> NO" << endl;
+    cout << "\nSCELTA: ";
     cin >> scelta;
     while (scelta!=0 && scelta!=1) {
         cout << "Valore errato!\nSCELTA: ";
@@ -446,7 +450,7 @@ int playagain(string p1, string p2, int won1, int won2) {
     return scelta;
 }
 
-void matrix(int n[]) {
+void matrix(int n[], string &b1, string &b2, string &b3, string &b4, string &b5, string &b6) {
     cout << "\t   1 2 3 4 5 6 7 8 9" << endl;
     
     char riga = 'A';
@@ -461,10 +465,34 @@ void matrix(int n[]) {
             else   
                 cout << BLU << "O" << DEFAULT << "|";
 
-            if (j==8 && i==3)
-                cout << "\tNAVE DA 5 - NAVE DA 4 - NAVE DA 4";
-            if (j==8 && i==5)
-                cout << "\tNAVE DA 3 - NAVE DA 3 - NAVE DA 2";
+            if (j==8 && i==3) {
+                if (b1.empty())
+                    cout << ROSSO << "\tNAVE DA 5" << DEFAULT << " - ";
+                else
+                    cout << VERDE << "\tNAVE DA 5" << DEFAULT << " - ";
+                if (b2.empty())
+                    cout << ROSSO << "NAVE DA 4" << DEFAULT << " - ";
+                else
+                    cout << VERDE << "NAVE DA 4" << DEFAULT << " - ";
+                if (b3.empty())
+                    cout << ROSSO << "NAVE DA 4" << DEFAULT;
+                else
+                    cout << VERDE << "NAVE DA 4" << DEFAULT;  
+            }                  
+            if (j==8 && i==5) {
+                if (b4.empty())
+                    cout << ROSSO << "\tNAVE DA 3" << DEFAULT << " - ";
+                else
+                    cout << VERDE << "\tNAVE DA 3" << DEFAULT << " - ";
+                if (b5.empty())
+                    cout << ROSSO << "NAVE DA 3" << DEFAULT << " - ";
+                else
+                    cout << VERDE << "NAVE DA 3" << DEFAULT << " - ";
+                if (b6.empty())
+                    cout << ROSSO << "NAVE DA 2" << DEFAULT;
+                else
+                    cout << VERDE << "NAVE DA 2" << DEFAULT;
+            }
         }
         cout << endl;
         riga++;
@@ -547,7 +575,7 @@ int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boa
     int N1, N2, indice;
     string coord;
     cout << "---------------------------------------" << endl;
-    matrix(v);
+    matrix(v, boat1, boat2, boat3, boat4, boat5, boat6);
     cout << "\nAmmiraglio " << GIALLO << p << DEFAULT << ", tocca a te!" << endl;
     cout << "COORDINATA DA BOMBARDARE: ";
     cin >> coord;
@@ -570,7 +598,7 @@ int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boa
         cout << "\nComplimenti ammiraglio, hai colpito una coordinata bombardata in precedenza!\nPurtroppo perdi questo turno :(\n" << endl;
     }
     cout << endl;
-    matrix(v);
+    matrix(v, boat1, boat2, boat3, boat4, boat5, boat6);
     cancella (boat1, boat2, boat3, boat4, boat5, boat6, coord);
     cout << VERDE << "\nIL TUO PUNTEGGIO" << DEFAULT << ": " << score << endl;
     cout << "---------------------------------------" << endl;
@@ -605,7 +633,7 @@ void showHistory() {
     ifstream file("history.txt");
     while (file >> p1) {
         file >> p2 >> victory1 >> victory2 >> s1 >> s2;
-        cout << p1 << " - " << victory1 << " (" << p1 << ") \tVS\t " << p2 << " - " << victory2 << " (" << p2 << ") " << endl;
+        cout << p1 << " - " << VERDE << victory1 << DEFAULT << " (" << s1 << "pt) \tVS\t " << p2 << " - " << VERDE << victory2 << DEFAULT << " (" << s2 << "pt) " << endl;
     }
     file.close();
     }
