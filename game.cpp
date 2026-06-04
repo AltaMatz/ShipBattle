@@ -16,6 +16,7 @@ using namespace std;
 
 // ---------------------------------- ELENCO FUNZIONI ----------------------------------
 void menu(int&);    //MENU INIZIALE
+void istruzioni();
 void menuPos1();    //ISTRUZIONI POSIZIONAMENTO COORD.1
 void menuPos2();    //ISTRUZIONI POSIZIONAMENTO COORD.2-3-4-5
 void matrix(int[], string&, string&, string&, string&, string&, string&);   //CAMPO DI BATTAGLIA
@@ -125,7 +126,14 @@ int main() {
             ofstream file("history.txt");
             file << "";
             file.close();
-            cout << "Cronologia cancellata con successo!" << endl << endl;
+            cout << VERDE << "Cronologia cancellata con successo!" << DEFAULT << endl << endl;
+            break;
+            }
+
+            case 4: {
+            clean ();
+            istruzioni();
+            clean();
             break;
             }
             
@@ -147,11 +155,47 @@ void menu(int &scelta) {
     cout << "1) " << VERDE << "Inizia una nuova partita" << DEFAULT << endl;
     cout << "2) Visualizza cronologia partite" << endl;
     cout << "3) Cancella cronologia partite" << endl;
+    cout << "4) " << GIALLO << "Istruzioni gioco" << DEFAULT << endl;
     cout << "0) " << ROSSO << "Esci dal gioco" << DEFAULT << endl;
     cout << "----------------------------------------" << endl;
     cout << "SCELTA: ";
     cin >> scelta;
     cout << endl;
+}
+
+void istruzioni() {
+    string a;
+    cout << "------------------- " << BLU << "ISTRUZIONI GIOCO" << DEFAULT << " -------------------" << endl;
+    cout << GIALLO << "OBIETTIVO" << DEFAULT << endl;
+    cout << "Affonda tutte le navi nemiche prima che il tuo" << endl;
+    cout << "avversario distrugga le tue. Vince chi raggiunge" << endl;
+    cout << "21 punti per primo (un punto per ogni segmento colpito)." << endl;
+    cout << endl;
+    cout << GIALLO << "LE NAVI" << DEFAULT << endl;
+    cout << "Ogni giocatore posiziona 6 navi sulla griglia 9x9:" << endl;
+    cout << "  - 1 nave da 5 segmenti" << endl;
+    cout << "  - 2 navi da 4 segmenti" << endl;
+    cout << "  - 2 navi da 3 segmenti" << endl;
+    cout << "  - 1 nave da 2 segmenti" << endl;
+    cout << endl;
+    cout << GIALLO << "POSIZIONAMENTO" << DEFAULT << endl;
+    cout << "Inserisci la prima coordinata nel formato" << endl;
+    cout << VERDE << "LETTERA + NUMERO" << DEFAULT << " (es. A1, E5, H9)." << endl;
+    cout << "Le coordinate successive si scelgono con i tasti" << endl;
+    cout << VERDE << "W" << DEFAULT << " (su)  " << VERDE << "S" << DEFAULT << " (giu)  " << VERDE << "A" << DEFAULT << " (sinistra)  " << VERDE << "D" << DEFAULT << " (destra)." << endl;
+    cout << "Le navi devono essere posizionate in linea retta." << endl;
+    cout << endl;
+    cout << GIALLO << "TURNI" << DEFAULT << endl;
+    cout << "I giocatori si alternano inserendo una coordinata" << endl;
+    cout << "da bombardare. Se colpisci una nave, " << VERDE << "giochi ancora!" << DEFAULT << endl;
+    cout << "Se colpisci una casella gia' bombardata, " << ROSSO << "perdi il turno." << DEFAULT << endl;
+    cout << endl;
+    cout << GIALLO << "SIMBOLI SUL TABELLONE" << DEFAULT << endl;
+    cout << ROSSO << "  X" << DEFAULT << "  -->  Nave colpita" << endl;
+    cout << BLU << "  O" << DEFAULT << "  -->  Colpo mancato" << endl;
+    cout << "--------------------------------------------------------" << endl;
+    cout << "\nDIGITA UN CARATTERE QUALSIASI PER TORNARE AL MENU: ";
+    cin >> a;
 }
 
 void menuPos1() {
@@ -407,31 +451,43 @@ void start(string &p1, string &p2, int &won1, int &won2, int v1[], int v2[], int
     int n = (rand()%2 + 1), ris=0;
     if (n==1) {  //gioca prima il giocatore 1
         while (ris!=1) {
-            ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2, score1);
-            if (ris==1) {
-                cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!";
-                won1++;
-                break;
-            }
-            ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, score2);
-            if (ris==1) {
-                cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!";
-                won2++;
-            }
+            turno1_1:
+                ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2, score1);
+                if (ris==1) {
+                    cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!";
+                    won1++;
+                    break;
+                } else if (ris==2) {
+                    goto turno1_1;
+                }
+            turno2_1:
+                ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, score2);
+                if (ris==1) {
+                    cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!";
+                    won2++;
+                } else if (ris==2) {
+                    goto turno2_1;
+                }
         }
     } else {    //gioca prima il giocatore 2
         while (ris!=1) {
-            ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, score2);
-            if (ris==1) {
-                cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!"<< endl << endl;
-                won2++;
-                break;
-            }
-            ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2, score1);
-            if (ris==1) {
-                cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!"<< endl << endl;
-                won1++;
-            }
+            turno1_2:
+                ris = turno(v2, n1, p2, boat1_1, boat2_1, boat3_1, boat4_1, boat5_1, boat6_1, score2);
+                if (ris==1) {
+                    cout << "\nL'ammiraglio " << GIALLO << p2 << DEFAULT << " ha vinto!"<< endl << endl;
+                    won2++;
+                    break;
+                } else if (ris==2) {
+                    goto turno1_2;
+                }
+            turno2_2:
+                ris = turno(v1, n2, p1, boat1_2, boat2_2, boat3_2, boat4_2, boat5_2, boat6_2, score1);
+                if (ris==1) {
+                    cout << "\nL'ammiraglio " << GIALLO << p1 << DEFAULT << " ha vinto!"<< endl << endl;
+                    won1++;
+                } else if (ris==2) {
+                    goto turno2_2;
+                }
         }
     }
 }
@@ -578,6 +634,7 @@ void cancella (string &boat1, string &boat2, string &boat3, string &boat4, strin
 int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boat3, string &boat4, string &boat5, string &boat6, int &score) {
     int N1, N2, indice;
     string coord;
+    int repeat = 0;
     cout << "---------------------------------------" << endl;
     matrix(v, boat1, boat2, boat3, boat4, boat5, boat6);
     cout << "\nAmmiraglio " << GIALLO << p << DEFAULT << ", tocca a te!" << endl;
@@ -594,6 +651,7 @@ int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boa
     if (v[indice]==0) {
         if (n[indice] == 1) {
             v[indice] = 1;
+            repeat = 1;
             score++;
         } else {
             v[indice] = 2;
@@ -609,10 +667,14 @@ int turno (int v[], int n[], string p, string &boat1, string &boat2, string &boa
     wait(2500);
     clean();
 
-    if (score>=punti)
+    if (score>=punti) {
         return 1;
-    else
-        return 0;
+    } else {
+        if (repeat == 1)
+            return 2;
+        else
+            return 0;
+    }
 }
 
 void wait(int n) {
