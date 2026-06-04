@@ -152,7 +152,7 @@ void menu(int &scelta) {
 
 void menuPos() {
     cout << "------ " << BLU << "ISTRUZIONI POSIZIONAMENTO" << DEFAULT << " ------" << endl; 
-    cout << "1) Inserire la prima coordinata" << endl;
+    cout << "1) Inserire la prima coordinata (MAIUSC)" << endl;
     cout << "2) Costruire il resto con comandi WASD:" << endl;
     cout << "\tW ---> Coordinata sopra" << endl;
     cout << "\tS ---> Coordinata sotto" << endl;
